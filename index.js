@@ -11,7 +11,11 @@ const server = http.createServer(app);
 app.use(cors());
 
 const io = new Server(server, {
-	cors: corsConfig,
+	cors: {
+		origin: "http://localhost:3000/",
+		methods: ["GET", "POST"],
+		credentials: true,
+	},
 });
 const redisClient = require("./redis");
 const { authUser } = require("./controllers/socket/authUser");
@@ -30,18 +34,20 @@ app.get("/flush", async (req, res) => {
 io.use(authUser);
 
 io.on("connect", (socket) => {
+	// console.log("connected", socket.user);
 	if (socket.user) {
 		// if current user is logged in as bus account
 		initialiseBus(socket);
 	}
 
 	socket.on("join", async (busId, errorCallback) => {
-		// chech if bus is online if not dont let user join
+		// check if bus is online if not dont let user join
 		const busData = await redisClient.hgetall(`busId:${busId}`);
-		if (!busData || !busData.connected) {
+		if (!busData || !(busData.connected === "true")) {
 			if (errorCallback) errorCallback();
 			return;
 		}
+		console.log("Client Joined", busId);
 		socket.join(busId);
 	});
 
