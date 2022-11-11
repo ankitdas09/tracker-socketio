@@ -60,7 +60,7 @@
 		<form id="form" action="">
 			<input id="input" autocomplete="off" /><button>Send</button>
 		</form>
-		<button id="join">Join</button>
+		<button id="join">Join AS022345</button>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io();
@@ -70,7 +70,9 @@
 			var join = document.getElementById("join");
 
 			join.addEventListener("click", function () {
-				socket.emit("join", "AS022345");
+				socket.emit("join", "AS022345", function () {
+					console.log("Bus offline");
+				});
 			});
 
 			form.addEventListener("submit", function (e) {

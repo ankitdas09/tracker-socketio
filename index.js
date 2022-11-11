@@ -31,23 +31,35 @@ io.use(authUser);
 
 io.on("connect", (socket) => {
 	if (socket.user) {
+		// if current user is logged in as bus account
 		initialiseBus(socket);
 	}
 
-	socket.on("join", async (busId) => {
+	socket.on("join", async (busId, errorCallback) => {
+		// chech if bus is online if not dont let user join
+		const busData = await redisClient.hgetall(`busId:${busId}`);
+		if (!busData || !busData.connected) {
+			if (errorCallback) errorCallback();
+			return;
+		}
 		socket.join(busId);
 	});
 
-	socket.on("location", (location, busId) => {
-		if (!socket.user) return;
+	socket.on("location", (location, busId, errorCallback) => {
+		// only allow bus account to post location
+		if (!socket.user) {
+			if (errorCallback) errorCallback();
+			return;
+		}
 		io.to(busId).emit("location", location);
 	});
 
 	socket.on("disconnect", () => {
+		// disconnect bus
 		if (socket.user) {
 			disconnectBus(socket);
 		}
-		console.log("Disconnected");
+		// console.log("Disconnected");
 	});
 });
 
