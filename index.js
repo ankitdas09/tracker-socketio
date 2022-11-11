@@ -36,12 +36,6 @@ io.on("connect", (socket) => {
 
 	socket.on("join", async (busId) => {
 		socket.join(busId);
-		// if (socket.user.id) {
-		// 	socket.join(busId);
-		// } else {
-		// 	const isBusActive = await redisClient.hgetall(`busId:${busId}`);
-		// 	console.log(isBusActive);
-		// }
 	});
 
 	socket.on("location", (location, busId) => {
@@ -53,6 +47,7 @@ io.on("connect", (socket) => {
 		if (socket.user) {
 			disconnectBus(socket);
 		}
+		console.log("Disconnected");
 	});
 });
 

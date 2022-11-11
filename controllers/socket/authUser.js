@@ -1,5 +1,6 @@
 module.exports.authUser = (socket, next) => {
-	const user = { name: "Bus2", id: "AS022345" };
+	const _id = socket.handshake.auth.id;
+	const user = { id: _id };
 	if (!user.id) {
 		return next();
 	}
