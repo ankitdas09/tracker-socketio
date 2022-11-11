@@ -57,7 +57,7 @@ io.on("connect", (socket) => {
 			if (errorCallback) errorCallback();
 			return;
 		}
-		io.to(busId).emit("location", location);
+		io.to(socket.user.id).emit("receive_location", location);
 	});
 
 	socket.on("disconnect", () => {
