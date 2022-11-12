@@ -67,8 +67,9 @@ io.on("connect", (socket) => {
 		// disconnect bus
 		if (socket.user) {
 			disconnectBus(socket);
+			io.to(socket.user.id).emit("receive_disconnect", "disconnected");
 		}
-		// console.log("Disconnected");
+		console.log("Disconnected");
 	});
 });
 
