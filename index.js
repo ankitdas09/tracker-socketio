@@ -12,7 +12,7 @@ app.use(cors());
 
 const io = new Server(server, {
 	cors: {
-		origin: "http://localhost:3000/",
+		origin: process.env.CLIENT,
 		methods: ["GET", "POST"],
 		credentials: true,
 	},
@@ -24,6 +24,9 @@ const { disconnectBus } = require("./controllers/socket/disconnectBus");
 
 app.get("/", (req, res) => {
 	res.sendFile(__dirname + "/index.html");
+});
+app.get("/status", (req, res) => {
+	res.send(redisClient.status);
 });
 
 app.get("/flush", async (req, res) => {
